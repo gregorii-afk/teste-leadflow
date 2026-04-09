@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeadFlow AI — Captação Inteligente de Leads</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --bg2: #0d1320;
+    --surface: #111827;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5c8;
+    --accent2: #7b5cf0;
+    --text: #f0f4ff;
+    --muted: #8899aa;
+    --glow: 0 0 40px rgba(0,229,200,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND GRID ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,200,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,200,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 6%;
+    background: rgba(8,12,20,0.75);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn-nav {
+    background: var(--accent);
+    color: #080c14;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 10px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-nav:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 6% 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,200,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    pointer-events: none;
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -55%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -55%) scale(1.08); }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,200,0.08);
+    border: 1px solid rgba(0,229,200,0.25);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: blink 1.4s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    max-width: 900px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 580px;
+    line-height: 1.7;
+    font-weight: 400;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  .hero-cta {
+    margin-top: 44px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #080c14;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 15px 34px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 rgba(0,229,200,0);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,229,200,0.3);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 15px 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .social-proof {
+    margin-top: 52px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: fadeUp 0.7s 0.4s ease both;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .avatars {
+    display: flex;
+  }
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    margin-left: -10px;
+    overflow: hidden;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+  }
+  .avatar:first-child { margin-left: 0; }
+  .a1{background:#7b5cf0} .a2{background:#00e5c8;color:#080c14} .a3{background:#f06060} .a4{background:#f0b840;color:#080c14}
+
+  .stars { color: #f0b840; letter-spacing: 1px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DASHBOARD MOCKUP ── */
+  .mockup-wrap {
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+    padding: 0 6% 100px;
+    max-width: 1100px;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .mockup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  }
+
+  .mockup-bar {
+    background: var(--bg2);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r{background:#ff6060} .dot-y{background:#ffb800} .dot-g{background:#22c55e}
+
+  .mockup-url {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .mockup-content {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 360px;
+  }
+
+  .sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+  .sidebar-item.active { background: rgba(0,229,200,0.08); color: var(--accent); }
+  .sidebar-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .main-area { padding: 24px; }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .stat-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; }
+  .stat-val.green { color: var(--accent); }
+  .stat-val.purple { color: var(--accent2); }
+  .stat-delta { font-size: 0.75rem; color: #22c55e; margin-top: 4px; }
+
+  .chart-area {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    height: 130px;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--accent2), rgba(123,92,240,0.3));
+    transition: height 0.5s ease;
+    animation: growBar 1s ease both;
+  }
+  @keyframes growBar { from{height:0} }
+  .bar.hi { background: linear-gradient(180deg, var(--accent), rgba(0,229,200,0.3)); }
+
+  /* ── FEATURES ── */
+  section { position: relative; z-index: 1; }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    text-align: center;
+  }
+  h2 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 16px auto 60px;
+  }
+
+  .features {
+    padding: 100px 6%;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    transition: border-color 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    border-color: rgba(0,229,200,0.2);
+    transform: translateY(-4px);
+  }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(0,229,200,0.1);
+    border: 1px solid rgba(0,229,200,0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .feature-icon.purple {
+    background: rgba(123,92,240,0.12);
+    border-color: rgba(123,92,240,0.25);
+  }
+
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .feature-card p { color: var(--muted); font-size: 0.92rem; line-height: 1.65; }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    padding: 100px 6%;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+  }
+  .step-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin: 0 auto 20px;
+    box-shadow: 0 0 20px rgba(0,229,200,0.2);
+  }
+  .step h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .step p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+  /* ── PRICING ── */
+  .pricing {
+    padding: 100px 6%;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    position: relative;
+    transition: transform 0.25s;
+  }
+  .plan-card:hover { transform: translateY(-4px); }
+  .plan-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(0,229,200,0.1);
+  }
+
+  .plan-popular {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #080c14;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 100px;
+  }
+
+  .plan-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .plan-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+  .plan-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 4px;
+  }
+  .plan-price span { font-size: 1rem; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+
+  .plan-period { font-size: 0.8rem; color: var(--muted); margin-bottom: 28px; }
+
+  .plan-features { list-style: none; margin-bottom: 32px; }
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .plan-features li:last-child { border-bottom: none; }
+  .plan-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .btn-plan {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-plan:hover { transform: translateY(-1px); opacity: 0.9; }
+  .btn-plan-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-plan-outline:hover { border-color: rgba(255,255,255,0.2); }
+  .btn-plan-fill {
+    background: var(--accent);
+    color: #080c14;
+  }
+
+  /* ── CTA FINAL ── */
+  .cta-section {
+    padding: 120px 6%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,92,240,0.15) 0%, transparent 70%);
+    bottom: -200px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 { font-size: clamp(2rem, 4.5vw, 3.5rem); }
+  .cta-section .section-sub { margin-bottom: 44px; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer .logo { font-size: 1.1rem; }
+  footer p { color: var(--muted); font-size: 0.82rem; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .mockup-content { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .steps::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Lead<span>Flow</span> AI</div>
+  <ul class="nav-links">
+    <li><a href="#features">Funcionalidades</a></li>
+    <li><a href="#como-funciona">Como funciona</a></li>
+    <li><a href="#precos">Preços</a></li>
+  </ul>
+  <a href="#precos" class="btn-nav">Começar grátis →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="badge">✦ IA para captação de leads</div>
+  <h1>Capture leads qualificados <em>no piloto automático</em></h1>
+  <p class="hero-sub">Automação inteligente que encontra, qualifica e nutre seus leads 24h por dia — enquanto você foca no que realmente importa: fechar negócios.</p>
+  <div class="hero-cta">
+    <a href="#precos" class="btn-primary">Testar 14 dias grátis</a>
+    <a href="#como-funciona" class="btn-ghost">Ver como funciona</a>
+  </div>
+  <div class="social-proof">
+    <div class="avatars">
+      <div class="avatar a1">JM</div>
+      <div class="avatar a2">RS</div>
+      <div class="avatar a3">CA</div>
+      <div class="avatar a4">PL</div>
+    </div>
+    <div>
+      <div class="stars">★★★★★</div>
+      <span>+1.200 empresas já automatizaram sua captação</span>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD MOCKUP -->
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="mockup-url">app.leadflow.ai/dashboard</div>
+    </div>
+    <div class="mockup-content">
+      <div class="sidebar">
+        <div class="sidebar-item active"><span class="icon">⚡</span> Dashboard</div>
+        <div class="sidebar-item"><span class="icon">🎯</span> Campanhas</div>
+        <div class="sidebar-item"><span class="icon">👥</span> Leads</div>
+        <div class="sidebar-item"><span class="icon">🤖</span> Automações</div>
+        <div class="sidebar-item"><span class="icon">📊</span> Relatórios</div>
+        <div class="sidebar-item"><span class="icon">⚙️</span> Integrações</div>
+      </div>
+      <div class="main-area">
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label">Leads capturados</div>
+            <div class="stat-val green">3.847</div>
+            <div class="stat-delta">↑ +24% este mês</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Taxa de conversão</div>
+            <div class="stat-val purple">18,4%</div>
+            <div class="stat-delta">↑ +6% vs anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Custo por lead</div>
+            <div class="stat-val">R$ 2,80</div>
+            <div class="stat-delta">↓ -41% com IA</div>
+          </div>
+        </div>
+        <div class="chart-area">
+          <div class="bar" style="height:40%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar hi" style="height:70%"></div>
+          <div class="bar" style="height:50%"></div>
+          <div class="bar hi" style="height:85%"></div>
+          <div class="bar" style="height:60%"></div>
+          <div class="bar hi" style="height:95%"></div>
+          <div class="bar" style="height:75%"></div>
+          <div class="bar hi" style="height:100%"></div>
+          <div class="bar" style="height:80%"></div>
+          <div class="bar hi" style="height:88%"></div>
+          <div class="bar" style="height:70%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Funcionalidades</div>
+  <h2>Tudo que você precisa para <em>escalar</em></h2>
+  <p class="section-sub">Tecnologia de IA que trabalha continuamente para trazer os leads certos para o seu negócio.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Qualificação automática com IA</h3>
+      <p>Nossa IA analisa o perfil de cada lead em tempo real, pontuando e classificando quem tem maior potencial de compra antes mesmo do primeiro contato.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon purple">⚡</div>
+      <h3>Captação multicanal</h3>
+      <p>Integre formulários, WhatsApp, Instagram, LinkedIn e e-mail em um único fluxo automatizado. Nunca mais perca um lead por falta de resposta rápida.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>Nutrição inteligente</h3>
+      <p>Sequências de mensagens personalizadas criadas por IA com base no comportamento do lead — enviadas no momento certo, pelo canal certo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon purple">📊</div>
+      <h3>Análises preditivas</h3>
+      <p>Preveja quais leads têm maior chance de conversão e aloque seus recursos de forma inteligente. Tome decisões baseadas em dados reais.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h3>Integrações nativas</h3>
+      <p>Conecte com seu CRM favorito: HubSpot, RD Station, Pipedrive, Salesforce e mais de 40 outras ferramentas sem precisar de código.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon purple">🛡️</div>
+      <h3>Segurança e LGPD</h3>
+      <p>Totalmente em conformidade com a LGPD. Gestão de consentimento automatizada, armazenamento seguro e auditoria completa de dados.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="como-funciona">
+  <div class="section-label">Como funciona</div>
+  <h2>Do clique à venda em <em>4 passos</em></h2>
+  <p class="section-sub">Configure em minutos e veja os resultados em horas.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Conecte suas fontes</h4>
+      <p>Integre seus canais de aquisição e formulários em minutos com nossas integrações plug-and-play.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>IA qualifica os leads</h4>
+      <p>Cada lead é analisado, pontuado e segmentado automaticamente com base no seu ICP definido.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Automação entra em ação</h4>
+      <p>Fluxos de nutrição personalizados são disparados automaticamente para cada perfil de lead.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Seu time fecha a venda</h4>
+      <p>Receba apenas leads aquecidos e qualificados prontos para a abordagem comercial.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="precos">
+  <div class="section-label">Planos</div>
+  <h2>Preço <em>transparente</em>, resultado real</h2>
+  <p class="section-sub">Comece grátis e escale conforme seu negócio cresce.</p>
+
+  <div class="pricing-grid">
+    <div class="plan-card">
+      <div class="plan-name">Starter</div>
+      <div class="plan-desc">Para quem está começando a automatizar</div>
+      <div class="plan-price">R$ 197<span>/mês</span></div>
+      <div class="plan-period">ou R$ 1.970/ano (2 meses grátis)</div>
+      <ul class="plan-features">
+        <li>Até 500 leads/mês</li>
+        <li>3 fluxos de automação</li>
+        <li>2 integrações</li>
+        <li>Qualificação por IA básica</li>
+        <li>Suporte via chat</li>
+      </ul>
+      <a href="#" class="btn-plan btn-plan-outline">Começar grátis</a>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="plan-popular">Mais popular</div>
+      <div class="plan-name">Growth</div>
+      <div class="plan-desc">Para empresas escalando captação</div>
+      <div class="plan-price">R$ 497<span>/mês</span></div>
+      <div class="plan-period">ou R$ 4.970/ano (2 meses grátis)</div>
+      <ul class="plan-features">
+        <li>Leads ilimitados</li>
+        <li>Fluxos ilimitados</li>
+        <li>40+ integrações nativas</li>
+        <li>IA de qualificação avançada</li>
+        <li>Análises preditivas</li>
+        <li>Suporte prioritário</li>
+      </ul>
+      <a href="#" class="btn-plan btn-plan-fill">Começar grátis 14 dias</a>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-desc">Para grandes operações comerciais</div>
+      <div class="plan-price">Custom</div>
+      <div class="plan-period">preço sob consulta</div>
+      <ul class="plan-features">
+        <li>Volume personalizado</li>
+        <li>IA treinada no seu negócio</li>
+        <li>API completa</li>
+        <li>SLA garantido</li>
+        <li>Onboarding dedicado</li>
+        <li>Gerente de sucesso</li>
+      </ul>
+      <a href="#" class="btn-plan btn-plan-outline">Falar com vendas</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="section-label">Pronto para começar?</div>
+  <h2>Automatize sua captação <em>hoje mesmo</em></h2>
+  <p class="section-sub">Junte-se a mais de 1.200 empresas que já transformaram sua geração de leads com IA. Sem cartão de crédito, cancele quando quiser.</p>
+  <a href="#" class="btn-primary">Criar conta grátis — 14 dias</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Lead<span>Flow</span> AI</div>
+  <p>© 2026 LeadFlow AI. Todos os direitos reservados.</p>
+  <div class="footer-links">
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+    <a href="#">LGPD</a>
+    <a href="#">Contato</a>
+  </div>
+</footer>
+
+</body>
+</html>
